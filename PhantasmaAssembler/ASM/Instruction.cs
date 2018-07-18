@@ -44,33 +44,15 @@ namespace PhantasmaAssembler.ASM
                     Code = ProcessPush();
                     break;
                 case InstructionName.MOVE:
-                    if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-                    byte[] result = new byte[3];
-                    result[0] = MakeScriptOp();
-
-                    for (int i = 0; i < Arguments.Length; i++)
-                    {
-                        if (Arguments[i].StartsWith("r"))
-                        {
-                            int x = 0;
-                            if (Int32.TryParse(Arguments[i].Substring(1), out x))
-                            {
-                                result[i + 1] = Convert.ToByte(x);
-                            }
-                        }
-                    }
-                    Code = result;
+                    Code = ProcessMove();
                     break;
-                case InstructionName.COPY:
                 case InstructionName.LOAD:
                     Code = ProcessLoad();
                     break;
+                case InstructionName.COPY:
                 case InstructionName.POP:
                 case InstructionName.SWAP:
                 case InstructionName.EXTCALL:
-                case InstructionName.JMP:
-                case InstructionName.JMPIF:
-                case InstructionName.JMPNOT:
                 case InstructionName.RET:
                 case InstructionName.CAT:
                 case InstructionName.SUBSTR:
@@ -104,12 +86,35 @@ namespace PhantasmaAssembler.ASM
                 case InstructionName.SWITCH:
                 case InstructionName.PUT:
                 case InstructionName.GET:
+                    Code = ProcessOthers();
+                    break;
+                case InstructionName.JMP:
+                case InstructionName.JMPIF:
+                case InstructionName.JMPNOT:
                 case InstructionName.CALL:
                     Code = ProcessJump();
                     break;
 
                 default:
                     throw new CompilerException(LineNumber, ERR_SYNTAX_ERROR);
+            }
+        }
+
+        private byte[] ProcessMove()
+        {
+            if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+            byte[] result = new byte[3];
+            result[0] = MakeScriptOp();
+            if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r"))
+            {
+                if (Int32.TryParse(Arguments[0].Substring(1), out int src))
+                {
+                    if (Int32.TryParse(Arguments[1].Substring(1), out int dest))
+                    {
+                        var sb = new ScriptBuilder();
+                        sb.EmitMove(src, dest);
+                    }
+                }
             }
         }
 
@@ -127,7 +132,34 @@ namespace PhantasmaAssembler.ASM
         private byte[] ProcessLoad()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            throw new NotImplementedException();
+            BigInteger bi;
+            var sb = new ScriptBuilder();
+            if (Arguments[0].StartsWith("r"))
+            {
+                var reg = Int32.Parse(Arguments[0].Substring(1));
+                if (BigInteger.TryParse(Arguments[1], out bi))
+                {
+                    sb.EmitLoad(reg, bi);
+                }
+                else if (Arguments[1].StartsWith("0x"))
+                {
+                    sb.EmitLoad(reg, ParseHex(Arguments[1]));
+                }
+                else if (string.Compare(Arguments[1], "false", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    sb.EmitLoad(reg, false);
+                }
+                else if (string.Compare(Arguments[1], "true", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    sb.EmitLoad(reg, true);
+                }
+                else if (Arguments[1].StartsWith('\"'))
+                {
+                    sb.EmitLoad(reg, Arguments[1]);
+                }
+                return sb.ToScript();
+            }
+            throw new CompilerException(LineNumber, ERR_SYNTAX_ERROR); //todo
         }
 
         internal byte[] ProcessJump(short offset = 0)
