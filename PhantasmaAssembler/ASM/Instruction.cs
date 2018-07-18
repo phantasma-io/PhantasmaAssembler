@@ -18,7 +18,7 @@ namespace PhantasmaAssembler.ASM
 
         private byte MakeScriptOp()
         {
-            return (byte) (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
+            return (byte)(Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
         }
 
         private byte[] ParseHex(string hex)
@@ -40,14 +40,11 @@ namespace PhantasmaAssembler.ASM
             {
                 //1 reg
                 case InstructionName.PUSH:
-                case InstructionName.POP:
                     Code = ProcessPush();
                     break;
-
-                case InstructionName.MOVE:
-                    Code = Process2Reg();
+                case InstructionName.POP:
+                    Code = ProcessPop();
                     break;
-
                 case InstructionName.LOAD:
                     Code = ProcessLoad();
                     break;
@@ -60,6 +57,7 @@ namespace PhantasmaAssembler.ASM
                 case InstructionName.NEGATE:
                 case InstructionName.ABS:
                 case InstructionName.COPY:
+                case InstructionName.MOVE:
                     Code = Process2Reg();
                     break;
 
@@ -68,23 +66,11 @@ namespace PhantasmaAssembler.ASM
                 case InstructionName.OR:
                 case InstructionName.XOR:
                 case InstructionName.CAT:
-                    Code = Process3Reg();
-                    break;
-
-                case InstructionName.EXTCALL:
-                case InstructionName.SUBSTR:
-                case InstructionName.LEFT:
-                case InstructionName.RIGHT:
                 case InstructionName.EQUAL:
                 case InstructionName.LT:
                 case InstructionName.GT:
                 case InstructionName.LTE:
                 case InstructionName.GTE:
-                case InstructionName.MIN:
-                case InstructionName.MAX:
-                case InstructionName.INC:
-                case InstructionName.DEC:
-
                 case InstructionName.ADD:
                 case InstructionName.SUB:
                 case InstructionName.MUL:
@@ -92,10 +78,21 @@ namespace PhantasmaAssembler.ASM
                 case InstructionName.MOD:
                 case InstructionName.SHL:
                 case InstructionName.SHR:
-                case InstructionName.CTX:
-                case InstructionName.SWITCH:
+                case InstructionName.MIN:
+                case InstructionName.MAX:
                 case InstructionName.PUT:
                 case InstructionName.GET:
+                    Code = Process3Reg();
+                    break;
+
+                case InstructionName.EXTCALL:
+                case InstructionName.SUBSTR:
+                case InstructionName.LEFT:
+                case InstructionName.RIGHT:
+                case InstructionName.INC:
+                case InstructionName.DEC:
+                case InstructionName.CTX:
+                case InstructionName.SWITCH:
                 case InstructionName.RET:
                     Code = ProcessOthers();
                     break;
@@ -111,9 +108,19 @@ namespace PhantasmaAssembler.ASM
             }
         }
 
-        private byte[] ProcessCopy()
+        private byte[] ProcessPop()
         {
-            throw new NotImplementedException();
+            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+            var sb = new ScriptBuilder();
+            if (Arguments[0].StartsWith("r"))
+            {
+                if (int.TryParse(Arguments[0].Substring(1), out var reg))
+                {
+                    sb.Emit(Opcode.POP, new[] { Convert.ToByte(reg) });
+
+                }
+            }
+            return sb.ToScript();
         }
 
         private byte[] Process2Reg()
@@ -123,7 +130,16 @@ namespace PhantasmaAssembler.ASM
             if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r"))
                 if (int.TryParse(Arguments[0].Substring(1), out var src))
                     if (int.TryParse(Arguments[1].Substring(1), out var dest))
-                        sb.EmitMove(src, dest);
+                        if (Name == InstructionName.MOVE)
+                        {
+                            sb.EmitMove(src, dest);
+                        }
+                        else
+                        {
+                            var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                            sb.Emit(type, new[] { Convert.ToByte(src), Convert.ToByte(dest) });
+                        }
+
             return sb.ToScript();
         }
 
@@ -174,7 +190,7 @@ namespace PhantasmaAssembler.ASM
         private byte[] ProcessOthers()
         {
             if (Arguments.Length != 0) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            return new[] {MakeScriptOp()};
+            return new[] { MakeScriptOp() };
         }
 
         private byte[] ProcessPush()
@@ -196,7 +212,7 @@ namespace PhantasmaAssembler.ASM
                     int.TryParse(Arguments[1].Substring(1), out var src_b_reg) &&
                     int.TryParse(Arguments[2].Substring(1), out var dest_reg))
                 {
-                    var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
+                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
                     sb.Emit(type, new[]
                     {
                         Convert.ToByte(src_a_reg),
@@ -205,7 +221,7 @@ namespace PhantasmaAssembler.ASM
                     });
                 }
 
-           
+
             return sb.ToScript();
         }
     }
