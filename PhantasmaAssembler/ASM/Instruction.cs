@@ -103,20 +103,19 @@ namespace PhantasmaAssembler.ASM
         private byte[] ProcessMove()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            byte[] result = new byte[3];
-            result[0] = MakeScriptOp();
+            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r"))
             {
                 if (Int32.TryParse(Arguments[0].Substring(1), out int src))
                 {
                     if (Int32.TryParse(Arguments[1].Substring(1), out int dest))
                     {
-                        var sb = new ScriptBuilder();
+                        
                         sb.EmitMove(src, dest);
                     }
                 }
             }
-            throw new CompilerException(LineNumber, ERR_SYNTAX_ERROR);
+            return sb.ToScript();
         }
 
         private byte[] ProcessAppCall()
