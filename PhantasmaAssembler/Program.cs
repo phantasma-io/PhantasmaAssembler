@@ -15,6 +15,8 @@ namespace PhantasmaAssembler
             var script = table.ToScript();
             //string out_path = args.Length >= 2 ? args[1] : Path.ChangeExtension(args[0], "avm");
             File.WriteAllBytes("result.pvm", script);
+
+
         }
     }
 }
