@@ -44,6 +44,23 @@ namespace PhantasmaAssembler.ASM
                     Code = ProcessPush();
                     break;
                 case InstructionName.MOVE:
+                    if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+                    byte[] result = new byte[3];
+                    result[0] = MakeScriptOp();
+
+                    for (int i = 0; i < Arguments.Length; i++)
+                    {
+                        if (Arguments[i].StartsWith("r"))
+                        {
+                            int x = 0;
+                            if (Int32.TryParse(Arguments[i].Substring(1), out x))
+                            {
+                                result[i + 1] = Convert.ToByte(x);
+                            }
+                        }
+                    }
+                    Code = result;
+                    break;
                 case InstructionName.COPY:
                 case InstructionName.LOAD:
                     Code = ProcessLoad();
