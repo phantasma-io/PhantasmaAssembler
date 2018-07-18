@@ -11,4 +11,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="hello.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
