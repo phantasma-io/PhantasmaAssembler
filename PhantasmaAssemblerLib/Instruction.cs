@@ -213,7 +213,7 @@ namespace Phantasma.AssemblerLib
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
             var extCall = Arguments[0];
-            if (string.IsNullOrEmpty(extCall))
+            if (!string.IsNullOrEmpty(extCall))
             {
                 sb.EmitCall(extCall);
                 return sb.ToScript();

@@ -9,7 +9,7 @@ namespace Phantasma.AssemblerConsole
         {
             //if (args.Length == 0) return;
             //if (!File.Exists(args[0])) return;
-            var lines = File.ReadAllLines("test.asm");
+            var lines = File.ReadAllLines("hello.asm");
             var semantemes = Semanteme.ProcessLines(lines);
             var table = new AddressTable(semantemes);
             var script = table.ToScript();
