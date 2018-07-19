@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Phantasma.AssemblerLib;
+using Phantasma.VM;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -15,8 +17,34 @@ namespace Phantasma.AssemblerConsole
             var script = table.ToScript();
             //string out_path = args.Length >= 2 ? args[1] : Path.ChangeExtension(args[0], "avm");
             File.WriteAllBytes("result.pvm", script);
+            var vm = new TestVM(script);
+            vm.Execute();
+        }
+    }
 
 
+    public class TestVM : VirtualMachine
+    {
+        public TestVM(byte[] script) : base(script)
+        {
+
+        }
+
+        public override ExecutionState ExecuteInterop(string method)
+        {
+            if (method == "Runtime.Log")
+            {
+                var item = stack.Pop();
+                Console.WriteLine(item);
+                return ExecutionState.Running;
+            }
+
+            return ExecutionState.Halt;
+        }
+
+        public override ExecutionContext LoadContext(byte[] key)
+        {
+            throw new NotImplementedException();
         }
     }
 }

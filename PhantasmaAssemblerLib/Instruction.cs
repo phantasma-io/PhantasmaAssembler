@@ -142,7 +142,7 @@ namespace Phantasma.AssemblerLib
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX))
             {
                 if (int.TryParse(Arguments[0].Substring(1), out var dest_reg) && Arguments[1].Length == KeyPair.PublicKeyLength)
                 {

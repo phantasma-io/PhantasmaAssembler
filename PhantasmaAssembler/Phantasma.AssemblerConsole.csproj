@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="PhantasmaChain">
+      <HintPath>..\..\PhantasmaChain\PhantasmaChain\bin\Debug\netstandard2.0\PhantasmaChain.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="hello.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
