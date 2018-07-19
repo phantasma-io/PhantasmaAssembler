@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhantasmaAssembler.ASM
+namespace Phantasma.AssemblerLib
 {
     public class CompilerException : Exception
     {

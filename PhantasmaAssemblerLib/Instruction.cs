@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Phantasma.Utils;
+using Phantasma.VM;
+using System;
 using System.Globalization;
 using System.Numerics;
-using Phantasma.Utils;
-using Phantasma.VM;
 
-namespace PhantasmaAssembler.ASM
+namespace Phantasma.AssemblerLib
 {
     internal class Instruction : Semanteme
     {
         private const string ERR_INCORRECT_NUMBER = "incorrect number of arguments";
         private const string ERR_INVALID_ARGUMENT = "invalid argument";
         private const string ERR_SYNTAX_ERROR = "syntax error";
+        private const string REG_PREFIX = "r";
         public string[] Arguments;
         public byte[] Code;
 
@@ -131,6 +132,7 @@ namespace PhantasmaAssembler.ASM
             });
 
             return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] ProcessCtx()
@@ -147,17 +149,18 @@ namespace PhantasmaAssembler.ASM
                         Convert.ToByte(dest_reg),
                         Convert.ToByte(Arguments[1])
                     });
+
+                    return sb.ToScript();
                 }
             }
-
-            return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] ProcessRightLeft()
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
             {
                 if (int.TryParse(Arguments[0].Substring(1), out var src_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest_reg) &&
@@ -170,16 +173,17 @@ namespace PhantasmaAssembler.ASM
                         Convert.ToByte(dest_reg),
                         Convert.ToByte(length)
                     });
+                    return sb.ToScript();
                 }
             }
-            return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] Process1Reg()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX))
             {
                 if (int.TryParse(Arguments[0].Substring(1), out var reg))
                 {
@@ -188,9 +192,10 @@ namespace PhantasmaAssembler.ASM
                     {
                         Convert.ToByte(reg)
                     });
+                    return sb.ToScript();
                 }
             }
-            return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] ProcessCall()//TODO check
@@ -204,9 +209,19 @@ namespace PhantasmaAssembler.ASM
                 {
                     Convert.ToByte(result)
                 });
+                return sb.ToScript();
             }
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+        }
 
-            return sb.ToScript();
+        internal byte[] ProcessJump(short offset = 0)
+        {
+            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+            var data = BitConverter.GetBytes(offset);
+            var result = new byte[3];
+            result[0] = MakeScriptOp();
+            Buffer.BlockCopy(data, 0, result, 1, sizeof(short));
+            return result;
         }
 
         private byte[] ProcessExtCall() //TODO check
@@ -217,15 +232,16 @@ namespace PhantasmaAssembler.ASM
             if (string.IsNullOrEmpty(extCall))
             {
                 sb.EmitCall(extCall);
+                return sb.ToScript();
             }
-            return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] Process2Reg()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest))
                 {
@@ -238,19 +254,10 @@ namespace PhantasmaAssembler.ASM
                         var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
                         sb.Emit(type, new[] { Convert.ToByte(src), Convert.ToByte(dest) });
                     }
+                    return sb.ToScript();
                 }
-            return sb.ToScript();
-        }
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
 
-        private byte[] ProcessAppCall()
-        {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var hash = ParseHex(Arguments[0]);
-            if (hash.Length != 20) throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
-            var result = new byte[21];
-            result[0] = MakeScriptOp();
-            Buffer.BlockCopy(hash, 0, result, 1, 20);
-            return result;
         }
 
         private byte[] ProcessLoad()
@@ -269,22 +276,14 @@ namespace PhantasmaAssembler.ASM
                     sb.EmitLoad(reg, false);
                 else if (string.Compare(Arguments[1], "true", StringComparison.OrdinalIgnoreCase) == 0)
                     sb.EmitLoad(reg, true);
-                else if (Arguments[1].StartsWith('\"')) sb.EmitLoad(reg, Arguments[1]);
+                else if (Arguments[1].IndexOf('\"') == 0) sb.EmitLoad(reg, Arguments[1]);
                 return sb.ToScript();
             }
 
-            throw new CompilerException(LineNumber, ERR_SYNTAX_ERROR); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessJump(short offset = 0)
-        {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var data = BitConverter.GetBytes(offset);
-            var result = new byte[3];
-            result[0] = MakeScriptOp();
-            Buffer.BlockCopy(data, 0, result, 1, sizeof(short));
-            return result;
-        }
+
 
         private byte[] ProcessOthers()
         {
@@ -292,21 +291,11 @@ namespace PhantasmaAssembler.ASM
             return new[] { MakeScriptOp() };
         }
 
-        private byte[] ProcessPush()
-        {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r"))
-                if (int.TryParse(Arguments[0].Substring(1), out var reg))
-                    sb.EmitPush(reg);
-            return sb.ToScript();
-        }
-
         private byte[] Process3Reg()
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith("r") && Arguments[1].StartsWith("r") && Arguments[2].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) && Arguments[2].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src_a_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var src_b_reg) &&
                     int.TryParse(Arguments[2].Substring(1), out var dest_reg))
@@ -318,10 +307,9 @@ namespace PhantasmaAssembler.ASM
                         Convert.ToByte(src_b_reg),
                         Convert.ToByte(dest_reg)
                     });
+                    return sb.ToScript();
                 }
-
-
-            return sb.ToScript();
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
     }
 }

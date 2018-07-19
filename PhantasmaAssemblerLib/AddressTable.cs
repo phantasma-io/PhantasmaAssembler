@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PhantasmaAssembler.ASM
+namespace Phantasma.AssemblerLib
 {
-    internal class AddressTable
+    public class AddressTable
     {
         private readonly List<Instruction> itable = new List<Instruction>();
         private readonly Dictionary<string, Label> ltable = new Dictionary<string, Label>();

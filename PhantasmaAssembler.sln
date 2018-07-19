@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhantasmaAssembler", "PhantasmaAssembler\PhantasmaAssembler.csproj", "{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhantasmaAssembler", "PhantasmaAssembler\PhantasmaAssembler.csproj", "{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhantasmaAssemblerLib", "PhantasmaAssemblerLib\PhantasmaAssemblerLib.csproj", "{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

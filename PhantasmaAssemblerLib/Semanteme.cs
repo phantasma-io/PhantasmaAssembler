@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PhantasmaAssembler.ASM
+namespace Phantasma.AssemblerLib
 {
-    internal abstract class Semanteme
+    public abstract class Semanteme
     {
         public uint LineNumber;
         public uint BaseAddress;

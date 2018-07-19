@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using PhantasmaAssembler.ASM;
+using Phantasma.AssemblerLib;
 
 namespace PhantasmaAssembler
 {

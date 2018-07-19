@@ -1,4 +1,4 @@
-﻿namespace PhantasmaAssembler.ASM
+﻿namespace Phantasma.AssemblerLib
 {
     internal class Label : Semanteme
     {
