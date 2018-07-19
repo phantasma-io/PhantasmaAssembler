@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Phantasma.AssemblerLib</RootNamespace>
+    <AssemblyName>Phantasma.AssemblerLib</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Phantasma.AssemblerLib;
 
-namespace PhantasmaAssembler
+namespace Phantasma.AssemblerConsole
 {
     internal class Program
     {
