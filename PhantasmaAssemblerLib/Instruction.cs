@@ -1,9 +1,9 @@
-﻿using Phantasma.Utils;
-using Phantasma.VM;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Numerics;
 using Phantasma.Core;
+using Phantasma.Utils;
+using Phantasma.VM;
 
 namespace Phantasma.AssemblerLib
 {
@@ -20,7 +20,7 @@ namespace Phantasma.AssemblerLib
 
         private byte MakeScriptOp()
         {
-            return (byte)(Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+            return (byte) (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
         }
 
         private byte[] ParseHex(string hex)
@@ -128,13 +128,14 @@ namespace Phantasma.AssemblerLib
 
             if (Arguments[0].Length == KeyPair.PublicKeyLength)
             {
-                var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                 sb.Emit(type, new[]
                 {
                     Convert.ToByte(Arguments[0])
                 });
                 return sb.ToScript();
             }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -143,10 +144,10 @@ namespace Phantasma.AssemblerLib
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX))
-            {
-                if (int.TryParse(Arguments[0].Substring(1), out var dest_reg) && Arguments[1].Length == KeyPair.PublicKeyLength)
+                if (int.TryParse(Arguments[0].Substring(1), out var dest_reg) &&
+                    Arguments[1].Length == KeyPair.PublicKeyLength)
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                    var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                     sb.Emit(type, new[]
                     {
                         Convert.ToByte(dest_reg),
@@ -155,7 +156,7 @@ namespace Phantasma.AssemblerLib
 
                     return sb.ToScript();
                 }
-            }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -164,12 +165,11 @@ namespace Phantasma.AssemblerLib
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
-            {
                 if (int.TryParse(Arguments[0].Substring(1), out var src_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest_reg) &&
                     int.TryParse(Arguments[2], out var length))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                    var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                     sb.Emit(type, new[]
                     {
                         Convert.ToByte(src_reg),
@@ -178,23 +178,24 @@ namespace Phantasma.AssemblerLib
                     });
                     return sb.ToScript();
                 }
-            }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessCall()//TODO check
+        internal byte[] ProcessCall() //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (short.TryParse(Arguments[0], out short result))
+            if (short.TryParse(Arguments[0], out var result))
             {
-                var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                 sb.Emit(type, new[]
                 {
                     Convert.ToByte(result)
                 });
                 return sb.ToScript();
             }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -212,12 +213,13 @@ namespace Phantasma.AssemblerLib
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            var extCall = Arguments[0];
+            var extCall = Arguments[0].Trim('\"');
             if (!string.IsNullOrEmpty(extCall))
             {
                 sb.EmitCall(extCall);
                 return sb.ToScript();
             }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -226,17 +228,16 @@ namespace Phantasma.AssemblerLib
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX))
-            {
                 if (int.TryParse(Arguments[0].Substring(1), out var reg))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                    var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                     sb.Emit(type, new[]
                     {
                         Convert.ToByte(reg)
                     });
                     return sb.ToScript();
                 }
-            }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -254,11 +255,13 @@ namespace Phantasma.AssemblerLib
                     }
                     else
                     {
-                        var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                        sb.Emit(type, new[] { Convert.ToByte(src), Convert.ToByte(dest) });
+                        var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
+                        sb.Emit(type, new[] {Convert.ToByte(src), Convert.ToByte(dest)});
                     }
+
                     return sb.ToScript();
                 }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -266,12 +269,13 @@ namespace Phantasma.AssemblerLib
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
-            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) && Arguments[2].StartsWith(REG_PREFIX))
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) &&
+                Arguments[2].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src_a_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var src_b_reg) &&
                     int.TryParse(Arguments[2].Substring(1), out var dest_reg))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+                    var type = (Opcode) Enum.Parse(typeof(Opcode), Name.ToString());
                     sb.Emit(type, new[]
                     {
                         Convert.ToByte(src_a_reg),
@@ -280,6 +284,7 @@ namespace Phantasma.AssemblerLib
                     });
                     return sb.ToScript();
                 }
+
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -299,7 +304,7 @@ namespace Phantasma.AssemblerLib
                     sb.EmitLoad(reg, false);
                 else if (string.Compare(Arguments[1], "true", StringComparison.OrdinalIgnoreCase) == 0)
                     sb.EmitLoad(reg, true);
-                else if (Arguments[1].IndexOf('\"') == 0) sb.EmitLoad(reg, Arguments[1]);
+                else if (Arguments[1].IndexOf('\"') >= 0) sb.EmitLoad(reg, Arguments[1].Trim('\"'));
                 return sb.ToScript();
             }
 
@@ -309,7 +314,7 @@ namespace Phantasma.AssemblerLib
         internal byte[] ProcessOthers()
         {
             if (Arguments.Length != 0) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            return new[] { MakeScriptOp() };
+            return new[] {MakeScriptOp()};
         }
     }
 }

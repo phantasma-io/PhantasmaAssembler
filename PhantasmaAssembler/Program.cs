@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Phantasma.AssemblerLib;
 using Phantasma.VM;
@@ -35,7 +36,7 @@ namespace Phantasma.AssemblerConsole
             if (method == "Runtime.Log")
             {
                 var item = stack.Pop();
-                Console.WriteLine(item);
+                Debug.WriteLine(item);
                 return ExecutionState.Running;
             }
 

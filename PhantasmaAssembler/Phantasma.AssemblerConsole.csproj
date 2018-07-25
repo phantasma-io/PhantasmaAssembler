@@ -8,13 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PhantasmaChain\PhantasmaChain\PhantasmaChain.csproj" />
     <ProjectReference Include="..\PhantasmaAssemblerLib\Phantasma.AssemblerLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PhantasmaChain">
-      <HintPath>..\..\PhantasmaChain\PhantasmaChain\bin\Debug\netstandard2.0\PhantasmaChain.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
