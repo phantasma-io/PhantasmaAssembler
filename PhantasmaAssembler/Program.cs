@@ -13,7 +13,7 @@ namespace Phantasma.AssemblerConsole
         {
             //if (args.Length == 0) return;
             //if (!File.Exists(args[0])) return;
-            var lines = File.ReadAllLines("test2.asm");
+            var lines = File.ReadAllLines("test3.asm");
             var semantemes = Semanteme.ProcessLines(lines);
             var sb = new ScriptBuilder();
 

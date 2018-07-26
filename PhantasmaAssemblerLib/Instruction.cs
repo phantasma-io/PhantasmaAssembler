@@ -14,6 +14,8 @@ namespace Phantasma.AssemblerLib
         private const string ERR_SYNTAX_ERROR = "syntax error";
         private const string REG_PREFIX = "r";
         private const string LABLE_PREFIX = "@";
+        private const char STRING_PREFIX = '\"';
+
         public string[] Arguments;
 
         public InstructionName Name;
@@ -115,17 +117,14 @@ namespace Phantasma.AssemblerLib
                     ProcessOthers(sb);
                     break;
 
-                case InstructionName.JMP:
-                    ProcessJump(sb);
-                    break;
-
                 case InstructionName.JMPIF:
                 case InstructionName.JMPNOT:
                     ProcessJumpIf(sb);
                     break;
 
                 case InstructionName.CALL:
-                    ProcessCall(sb);
+                case InstructionName.JMP:
+                    ProcessJump(sb);
                     break;
 
                 default:
@@ -181,20 +180,7 @@ namespace Phantasma.AssemblerLib
                     });
                     return;
                 }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
-        }
 
-        private void ProcessCall(ScriptBuilder sb) //TODO check
-        {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            if (short.TryParse(Arguments[0], out var result))
-            {
-                sb.Emit(MakeScriptOp(), new[]
-                {
-                    Convert.ToByte(result)
-                });
-                return;
-            }
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
@@ -217,7 +203,7 @@ namespace Phantasma.AssemblerLib
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(LABLE_PREFIX))
             {
-                sb.EmitJump(Arguments[0]);
+                sb.EmitJump(MakeScriptOp(), Arguments[0]);
                 return;
             }
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
@@ -226,10 +212,10 @@ namespace Phantasma.AssemblerLib
         private void ProcessExtCall(ScriptBuilder sb) //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var extCall = Arguments[0].Trim('\"');
+            var extCall = Arguments[0].Trim(STRING_PREFIX);
             if (!string.IsNullOrEmpty(extCall))
             {
-                sb.EmitCall(extCall);
+                sb.EmitExtCall(extCall);
                 return;
             }
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
@@ -297,7 +283,7 @@ namespace Phantasma.AssemblerLib
         private void ProcessLoad(ScriptBuilder sb)
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            if (Arguments[0].StartsWith("r"))
+            if (Arguments[0].StartsWith(REG_PREFIX))
             {
                 var reg = int.Parse(Arguments[0].Substring(1));
                 if (BigInteger.TryParse(Arguments[1], out var bi))
@@ -308,7 +294,7 @@ namespace Phantasma.AssemblerLib
                     sb.EmitLoad(reg, false);
                 else if (string.Compare(Arguments[1], "true", StringComparison.OrdinalIgnoreCase) == 0)
                     sb.EmitLoad(reg, true);
-                else if (Arguments[1].IndexOf('\"') >= 0) sb.EmitLoad(reg, Arguments[1].Trim('\"'));
+                else if (Arguments[1].IndexOf(STRING_PREFIX) >= 0) sb.EmitLoad(reg, Arguments[1].Trim(STRING_PREFIX));
                 return;
             }
 
