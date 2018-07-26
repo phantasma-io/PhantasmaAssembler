@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Phantasma.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,8 @@ namespace Phantasma.AssemblerLib
     {
         public uint LineNumber;
         public uint BaseAddress;
+
+        public abstract void Process(ScriptBuilder sb);
 
         public static IEnumerable<Semanteme> ProcessLines(IEnumerable<string> lines)
         {
