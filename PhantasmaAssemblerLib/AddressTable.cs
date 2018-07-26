@@ -30,22 +30,6 @@ namespace Phantasma.AssemblerLib
                     ltable.Add(label.Name, label);
                 }
             }
-            foreach (Instruction instruction in itable)
-            {
-                switch (instruction.Name)
-                {
-                    case InstructionName.JMP:
-                    case InstructionName.JMPIF:
-                    case InstructionName.CALL:
-                        if (!ltable.ContainsKey(instruction.Arguments[0]))
-                            throw new CompilerException(instruction.LineNumber, "invalid label");
-                        int offset = (int)ltable[instruction.Arguments[0]].BaseAddress - (int)instruction.BaseAddress;
-                        if (offset < short.MinValue || offset > short.MaxValue)
-                            throw new CompilerException(instruction.LineNumber, "long jump");
-                        instruction.Code = instruction.ProcessJump((short)offset);
-                        break;
-                }
-            }
         }
 
         public byte[] ToScript()
