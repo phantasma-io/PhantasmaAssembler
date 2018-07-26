@@ -178,7 +178,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessCall() //TODO check
+        private byte[] ProcessCall() //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (short.TryParse(Arguments[0], out var result))
@@ -193,7 +193,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessJumpIf()
+        private byte[] ProcessJumpIf()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(LABLE_PREFIX))
@@ -209,7 +209,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessJump()
+        private byte[] ProcessJump()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(LABLE_PREFIX))
@@ -221,7 +221,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessExtCall() //TODO check
+        private byte[] ProcessExtCall() //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var extCall = Arguments[0].Trim('\"');
@@ -234,7 +234,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] Process1Reg()
+        private byte[] Process1Reg()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(REG_PREFIX))
@@ -251,7 +251,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] Process2Reg()
+        private byte[] Process2Reg()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
@@ -274,7 +274,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] Process3Reg()
+        private byte[] Process3Reg()
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) &&
@@ -296,7 +296,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessLoad()
+        private byte[] ProcessLoad()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             if (Arguments[0].StartsWith("r"))
@@ -318,7 +318,7 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessOthers()
+        private byte[] ProcessOthers()
         {
             if (Arguments.Length != 0) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             var sb = new ScriptBuilder();
