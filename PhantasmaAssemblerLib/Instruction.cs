@@ -19,9 +19,9 @@ namespace Phantasma.AssemblerLib
 
         public InstructionName Name;
 
-        private byte MakeScriptOp()
+        private Opcode MakeScriptOp()
         {
-            return (byte)(Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+            return (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
         }
 
         private byte[] ParseHex(string hex)
@@ -127,31 +127,27 @@ namespace Phantasma.AssemblerLib
         private byte[] ProcessSwitch()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
-
             if (Arguments[0].Length == KeyPair.PublicKeyLength)
             {
-                var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                sb.Emit(type, new[]
+                var sb = new ScriptBuilder();
+                sb.Emit(MakeScriptOp(), new[]
                 {
                     Convert.ToByte(Arguments[0])
                 });
                 return sb.ToScript();
             }
-
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] ProcessCtx()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var dest_reg) &&
                     Arguments[1].Length == KeyPair.PublicKeyLength)
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                    sb.Emit(type, new[]
+                    var sb = new ScriptBuilder();
+                    sb.Emit(MakeScriptOp(), new[]
                     {
                         Convert.ToByte(dest_reg),
                         Convert.ToByte(Arguments[1])
@@ -159,21 +155,19 @@ namespace Phantasma.AssemblerLib
 
                     return sb.ToScript();
                 }
-
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         private byte[] ProcessRightLeft()
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest_reg) &&
                     int.TryParse(Arguments[2], out var length))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                    sb.Emit(type, new[]
+                    var sb = new ScriptBuilder();
+                    sb.Emit(MakeScriptOp(), new[]
                     {
                         Convert.ToByte(src_reg),
                         Convert.ToByte(dest_reg),
@@ -181,76 +175,73 @@ namespace Phantasma.AssemblerLib
                     });
                     return sb.ToScript();
                 }
-
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         internal byte[] ProcessCall() //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (short.TryParse(Arguments[0], out var result))
             {
-                var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                sb.Emit(type, new[]
+                var sb = new ScriptBuilder();
+                sb.Emit(MakeScriptOp(), new[]
                 {
                     Convert.ToByte(result)
                 });
                 return sb.ToScript();
             }
-
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         internal byte[] ProcessJumpIf()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(LABLE_PREFIX))
             {
                 if (int.TryParse(Arguments[0].Substring(1), out var reg))
                 {
+                    var sb = new ScriptBuilder();
                     sb.EmitLabel(Arguments[1]);
-                    sb.EmitConditionalJump(Opcode.JMPIF, reg, Arguments[1]);
+                    sb.EmitConditionalJump(MakeScriptOp(), reg, Arguments[1]);
                     return sb.ToScript();
                 }
             }
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
-        internal byte[] ProcessJump(short offset = 0)
+        internal byte[] ProcessJump()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var data = BitConverter.GetBytes(offset);
-            var result = new byte[3];
-            result[0] = MakeScriptOp();
-            Buffer.BlockCopy(data, 0, result, 1, sizeof(short));
-            return result;
+            if (Arguments[0].StartsWith(LABLE_PREFIX))
+            {
+                var sb = new ScriptBuilder();
+                sb.EmitJump(Arguments[0]);
+                return sb.ToScript();
+            }
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         internal byte[] ProcessExtCall() //TODO check
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             var extCall = Arguments[0].Trim('\"');
             if (!string.IsNullOrEmpty(extCall))
             {
+                var sb = new ScriptBuilder();
                 sb.EmitCall(extCall);
                 return sb.ToScript();
             }
-
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
         }
 
         internal byte[] Process1Reg()
         {
             if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var reg))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                    sb.Emit(type, new[]
+                    var sb = new ScriptBuilder();
+                    sb.Emit(MakeScriptOp(), new[]
                     {
                         Convert.ToByte(reg)
                     });
@@ -263,19 +254,18 @@ namespace Phantasma.AssemblerLib
         internal byte[] Process2Reg()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest))
                 {
+                    var sb = new ScriptBuilder();
                     if (Name == InstructionName.MOVE)
                     {
                         sb.EmitMove(src, dest);
                     }
                     else
                     {
-                        var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                        sb.Emit(type, new[] { Convert.ToByte(src), Convert.ToByte(dest) });
+                        sb.Emit(MakeScriptOp(), new[] { Convert.ToByte(src), Convert.ToByte(dest) });
                     }
 
                     return sb.ToScript();
@@ -287,15 +277,14 @@ namespace Phantasma.AssemblerLib
         internal byte[] Process3Reg()
         {
             if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) &&
                 Arguments[2].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src_a_reg) &&
                     int.TryParse(Arguments[1].Substring(1), out var src_b_reg) &&
                     int.TryParse(Arguments[2].Substring(1), out var dest_reg))
                 {
-                    var type = (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
-                    sb.Emit(type, new[]
+                    var sb = new ScriptBuilder();
+                    sb.Emit(MakeScriptOp(), new[]
                     {
                         Convert.ToByte(src_a_reg),
                         Convert.ToByte(src_b_reg),
@@ -310,12 +299,11 @@ namespace Phantasma.AssemblerLib
         internal byte[] ProcessLoad()
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            BigInteger bi;
-            var sb = new ScriptBuilder();
             if (Arguments[0].StartsWith("r"))
             {
+                var sb = new ScriptBuilder();
                 var reg = int.Parse(Arguments[0].Substring(1));
-                if (BigInteger.TryParse(Arguments[1], out bi))
+                if (BigInteger.TryParse(Arguments[1], out var bi))
                     sb.EmitLoad(reg, bi);
                 else if (Arguments[1].StartsWith("0x"))
                     sb.EmitLoad(reg, ParseHex(Arguments[1]));
@@ -333,7 +321,9 @@ namespace Phantasma.AssemblerLib
         internal byte[] ProcessOthers()
         {
             if (Arguments.Length != 0) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            return new[] { MakeScriptOp() };
+            var sb = new ScriptBuilder();
+            sb.Emit(MakeScriptOp());
+            return sb.ToScript();
         }
     }
 }
