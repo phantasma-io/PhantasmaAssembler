@@ -143,7 +143,7 @@ namespace Phantasma.AssemblerLib
                 });
                 return;
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessCtx(ScriptBuilder sb)
@@ -161,7 +161,7 @@ namespace Phantasma.AssemblerLib
 
                     return;
                 }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessRightLeft(ScriptBuilder sb)
@@ -181,7 +181,7 @@ namespace Phantasma.AssemblerLib
                     return;
                 }
 
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessJumpIf(ScriptBuilder sb)
@@ -195,7 +195,8 @@ namespace Phantasma.AssemblerLib
                     return;
                 }
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessJump(ScriptBuilder sb)
@@ -206,7 +207,7 @@ namespace Phantasma.AssemblerLib
                 sb.EmitJump(MakeScriptOp(), Arguments[0]);
                 return;
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessExtCall(ScriptBuilder sb) //TODO check
@@ -218,7 +219,7 @@ namespace Phantasma.AssemblerLib
                 sb.EmitExtCall(extCall);
                 return;
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void Process1Reg(ScriptBuilder sb)
@@ -234,7 +235,7 @@ namespace Phantasma.AssemblerLib
                     return;
                 }
 
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void Process2Reg(ScriptBuilder sb)
@@ -256,7 +257,7 @@ namespace Phantasma.AssemblerLib
                     return;
                 }
 
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void Process3Reg(ScriptBuilder sb)
@@ -277,7 +278,7 @@ namespace Phantasma.AssemblerLib
                     return;
                 }
 
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessLoad(ScriptBuilder sb)
@@ -298,7 +299,7 @@ namespace Phantasma.AssemblerLib
                 return;
             }
 
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT); //todo
+            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
         private void ProcessOthers(ScriptBuilder sb)
