@@ -8,12 +8,12 @@ namespace Phantasma.AssemblerLib
 
         public override void Process(ScriptBuilder sb)
         {
-            sb.EmitLabel(this.Name);
+            sb.EmitLabel(Name);
         }
 
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
 
     }

@@ -23,16 +23,16 @@ namespace Phantasma.AssemblerLib
                 int index;
                 if (isInComment)
                 {
-                    index = pline.IndexOf("*/");
+                    index = pline.IndexOf("*/", StringComparison.Ordinal);
                     if (index == -1) continue;
                     pline = pline.Substring(index + 2);
                 }
                 index = 0;
                 while (true)
                 {
-                    index = pline.IndexOf("/*", index);
+                    index = pline.IndexOf("/*", index, StringComparison.Ordinal);
                     if (index == -1) break;
-                    int index2 = pline.IndexOf("*/", index + 2);
+                    int index2 = pline.IndexOf("*/", index + 2, StringComparison.Ordinal);
                     if (index2 >= 0)
                     {
                         pline = pline.Substring(0, index) + pline.Substring(index2 + 2);
@@ -44,7 +44,7 @@ namespace Phantasma.AssemblerLib
                         break;
                     }
                 }
-                index = pline.IndexOf("//");
+                index = pline.IndexOf("//", StringComparison.Ordinal);
                 if (index >= 0) pline = pline.Substring(0, index);
                 pline = pline.Trim();
                 index = pline.IndexOf(':');
@@ -60,8 +60,7 @@ namespace Phantasma.AssemblerLib
                 if (!string.IsNullOrEmpty(pline))
                 {
                     string[] words = pline.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    InstructionName name;
-                    if (!Enum.TryParse(words[0], true, out name))
+                    if (!Enum.TryParse(words[0], true, out InstructionName name))
                         throw new CompilerException(lineNumber, "syntax error");
                     yield return new Instruction
                     {
