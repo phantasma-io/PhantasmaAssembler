@@ -262,19 +262,30 @@ namespace Phantasma.AssemblerLib
 
         private void Process3Reg(ScriptBuilder sb)
         {
-            if (Arguments.Length != 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX) &&
-                Arguments[2].StartsWith(REG_PREFIX))
+            if (Arguments.Length <= 1 || Arguments.Length > 3) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(REG_PREFIX))
                 if (int.TryParse(Arguments[0].Substring(1), out var src_a_reg) &&
-                    int.TryParse(Arguments[1].Substring(1), out var src_b_reg) &&
-                    int.TryParse(Arguments[2].Substring(1), out var dest_reg))
+                    int.TryParse(Arguments[1].Substring(1), out var src_b_reg))
                 {
-                    sb.Emit(MakeScriptOp(), new[]
+                    if (Arguments.Length == 2)
                     {
-                        Convert.ToByte(src_a_reg),
-                        Convert.ToByte(src_b_reg),
-                        Convert.ToByte(dest_reg)
-                    });
+                        sb.Emit(MakeScriptOp(), new[]
+                        {
+                            Convert.ToByte(src_a_reg),
+                            Convert.ToByte(src_b_reg),
+                            Convert.ToByte(src_a_reg)
+                        });
+                    }
+                    else if (int.TryParse(Arguments[2].Substring(1), out var dest_reg) && Arguments[2].StartsWith(REG_PREFIX))
+                    {
+                        sb.Emit(MakeScriptOp(), new[]
+                        {
+                            Convert.ToByte(src_a_reg),
+                            Convert.ToByte(src_b_reg),
+                            Convert.ToByte(dest_reg)
+                        });
+                    }
+
                     return;
                 }
 
