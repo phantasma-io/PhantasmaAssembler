@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using Phantasma.AssemblerLib;
 using Phantasma.Utils;
-using Phantasma.VM;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -11,50 +10,77 @@ namespace Phantasma.AssemblerConsole
     {
         public static void Main(string[] args)
         {
-            //if (args.Length == 0) return;
-            //if (!File.Exists(args[0])) return;
-            var lines = File.ReadAllLines("test3.asm");
-            var semantemes = Semanteme.ProcessLines(lines);
-            var sb = new ScriptBuilder();
+            var arguments = new Arguments(args);
 
-            foreach (var entry in semantemes)
+            string sourceFilePath = null;
+
+            try
             {
-                Console.WriteLine($"{entry}");
-                entry.Process(sb);
+                sourceFilePath = arguments.GetDefaultValue();
+            }
+            catch
+            {
+                Console.WriteLine($"{System.AppDomain.CurrentDomain.FriendlyName}.exe <filename.asm>");
+                System.Environment.Exit(-1);
             }
 
-            var script = sb.ToScript();
+            string[] lines = null;
+            try
+            {
+                lines = File.ReadAllLines(sourceFilePath);
+            }
+            catch
+            {
+                Console.WriteLine("Error reading " + sourceFilePath);
+                Environment.Exit(-1);
+            }
 
-            //string out_path = args.Length >= 2 ? args[1] : Path.ChangeExtension(args[0], "avm");
-            File.WriteAllBytes("result.pvm", script);
+            IEnumerable<Semanteme> semantemes = null;
+            try
+            {
+                semantemes = Semanteme.ProcessLines(lines);
+            }
+            catch
+            {
+                Console.WriteLine("Error parsing " + sourceFilePath);
+                Environment.Exit(-1);
+            }
+
+            var sb = new ScriptBuilder();
+            byte[] script = null;
+
+            try
+            {               
+                foreach (var entry in semantemes)
+                {
+                    //Console.WriteLine($"{entry}");
+                    entry.Process(sb);
+                }
+                script = sb.ToScript();
+            }
+            catch
+            {
+                Console.WriteLine("Error assembling " + sourceFilePath);
+                Environment.Exit(-1);
+            }
+
+            var extension = Path.GetExtension(sourceFilePath);
+            var outputName = sourceFilePath.Replace(extension, ".svm");
+
+            try
+            {
+                File.WriteAllBytes(outputName, script);
+            }
+            catch
+            {
+                Console.WriteLine("Error generating " + outputName);
+                Environment.Exit(-1);
+            }
+
+
+            Console.WriteLine("Executing script...");
             var vm = new TestVM(script);
             vm.Execute();
-        }
-    }
-
-
-    public class TestVM : VirtualMachine
-    {
-        public TestVM(byte[] script) : base(script)
-        {
-
-        }
-
-        public override ExecutionState ExecuteInterop(string method)
-        {
-            if (method == "Runtime.Log")
-            {
-                var item = stack.Pop();
-                Debug.WriteLine(item);
-                return ExecutionState.Running;
-            }
-
-            return ExecutionState.Halt;
-        }
-
-        public override ExecutionContext LoadContext(byte[] key)
-        {
-            throw new NotImplementedException();
         }
     }
 }
