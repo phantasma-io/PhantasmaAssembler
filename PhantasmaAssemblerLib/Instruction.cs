@@ -210,16 +210,34 @@ namespace Phantasma.AssemblerLib
             throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
         }
 
-        private void ProcessExtCall(ScriptBuilder sb) //TODO check
+        private void ProcessExtCall(ScriptBuilder sb)
         {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            var extCall = Arguments[0].Trim(STRING_PREFIX);
-            if (!string.IsNullOrEmpty(extCall))
+            if (Arguments.Length != 1)
             {
-                sb.EmitExtCall(extCall);
-                return;
+                throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+
+            if (Arguments[0].IndexOf(STRING_PREFIX) >= 0)
+            {
+                var extCall = Arguments[0].Trim(STRING_PREFIX);
+
+                if (string.IsNullOrEmpty(extCall))
+                {
+                    throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+                }
+
+                sb.EmitExtCall(extCall);
+            }
+            else
+            if (Arguments[0].StartsWith(REG_PREFIX))
+            {
+                var reg = byte.Parse(Arguments[0].Substring(1));
+                sb.Emit(Opcode.EXTCALL, new byte[] { reg });
+            }
+            else
+            {
+                throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+            }
         }
 
         private void Process1Reg(ScriptBuilder sb)
