@@ -18,7 +18,7 @@ namespace Phantasma.AssemblerLib
 
         public string[] Arguments;
 
-        public InstructionName Name;
+        public Opcode Name;
 
         public override string ToString()
         {
@@ -48,82 +48,82 @@ namespace Phantasma.AssemblerLib
             switch (Name)
             {
                 //1 reg
-                case InstructionName.PUSH:
-                case InstructionName.POP:
-                case InstructionName.INC:
-                case InstructionName.DEC:
+                case Opcode.PUSH:
+                case Opcode.POP:
+                case Opcode.INC:
+                case Opcode.DEC:
                     Process1Reg(sb);
                     break;
 
-                case InstructionName.LOAD:
+                case Opcode.LOAD:
                     ProcessLoad(sb);
                     break;
 
                 //2 reg
-                case InstructionName.SWAP:
-                case InstructionName.SIZE:
-                case InstructionName.NOT:
-                case InstructionName.SIGN:
-                case InstructionName.NEGATE:
-                case InstructionName.ABS:
-                case InstructionName.COPY:
-                case InstructionName.MOVE:
+                case Opcode.SWAP:
+                case Opcode.SIZE:
+                case Opcode.NOT:
+                case Opcode.SIGN:
+                case Opcode.NEGATE:
+                case Opcode.ABS:
+                case Opcode.COPY:
+                case Opcode.MOVE:
                     Process2Reg(sb);
                     break;
 
                 //3 reg
-                case InstructionName.AND:
-                case InstructionName.OR:
-                case InstructionName.XOR:
-                case InstructionName.CAT:
-                case InstructionName.EQUAL:
-                case InstructionName.LT:
-                case InstructionName.GT:
-                case InstructionName.LTE:
-                case InstructionName.GTE:
-                case InstructionName.ADD:
-                case InstructionName.SUB:
-                case InstructionName.MUL:
-                case InstructionName.DIV:
-                case InstructionName.MOD:
-                case InstructionName.SHL:
-                case InstructionName.SHR:
-                case InstructionName.MIN:
-                case InstructionName.MAX:
-                case InstructionName.PUT:
-                case InstructionName.GET:
+                case Opcode.AND:
+                case Opcode.OR:
+                case Opcode.XOR:
+                case Opcode.CAT:
+                case Opcode.EQUAL:
+                case Opcode.LT:
+                case Opcode.GT:
+                case Opcode.LTE:
+                case Opcode.GTE:
+                case Opcode.ADD:
+                case Opcode.SUB:
+                case Opcode.MUL:
+                case Opcode.DIV:
+                case Opcode.MOD:
+                case Opcode.SHL:
+                case Opcode.SHR:
+                case Opcode.MIN:
+                case Opcode.MAX:
+                case Opcode.PUT:
+                case Opcode.GET:
                     Process3Reg(sb);
                     break;
 
-                case InstructionName.EXTCALL:
+                case Opcode.EXTCALL:
                     ProcessExtCall(sb);
                     break;
 
-                case InstructionName.SUBSTR:
-                case InstructionName.LEFT:
-                case InstructionName.RIGHT:
+                case Opcode.SUBSTR:
+                case Opcode.LEFT:
+                case Opcode.RIGHT:
                     ProcessRightLeft(sb);
                     break;
 
-                case InstructionName.CTX:
+                case Opcode.CTX:
                     ProcessCtx(sb);
                     break;
 
-                case InstructionName.SWITCH:
+                case Opcode.SWITCH:
                     ProcessSwitch(sb);
                     break;
 
-                case InstructionName.RET:
+                case Opcode.RET:
                     ProcessOthers(sb);
                     break;
 
-                case InstructionName.JMPIF:
-                case InstructionName.JMPNOT:
+                case Opcode.JMPIF:
+                case Opcode.JMPNOT:
                     ProcessJumpIf(sb);
                     break;
 
-                case InstructionName.CALL:
-                case InstructionName.JMP:
+                case Opcode.CALL:
+                case Opcode.JMP:
                     ProcessJump(sb);
                     break;
 
@@ -245,7 +245,7 @@ namespace Phantasma.AssemblerLib
                 if (int.TryParse(Arguments[0].Substring(1), out var src) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest))
                 {
-                    if (Name == InstructionName.MOVE)
+                    if (Name == Opcode.MOVE)
                     {
                         sb.EmitMove(src, dest);
                     }

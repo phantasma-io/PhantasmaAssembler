@@ -1,4 +1,5 @@
-﻿using Phantasma.Utils;
+﻿using Phantasma.VM;
+using Phantasma.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace Phantasma.AssemblerLib
                 if (!string.IsNullOrEmpty(pline))
                 {
                     string[] words = pline.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (!Enum.TryParse(words[0], true, out InstructionName name))
+                    if (!Enum.TryParse(words[0], true, out Opcode name))
                         throw new CompilerException(lineNumber, "syntax error");
                     yield return new Instruction
                     {
