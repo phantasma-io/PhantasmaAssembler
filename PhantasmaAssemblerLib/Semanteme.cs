@@ -66,7 +66,7 @@ namespace Phantasma.AssemblerLib
                     yield return new Instruction
                     {
                         LineNumber = lineNumber,
-                        Name = name,
+                        Opcode = name,
                         Arguments = words.Skip(1).ToArray()
                     };
                 }

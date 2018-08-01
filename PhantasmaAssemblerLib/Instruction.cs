@@ -13,21 +13,16 @@ namespace Phantasma.AssemblerLib
         private const string ERR_INVALID_ARGUMENT = "invalid argument";
         private const string ERR_SYNTAX_ERROR = "syntax error";
         private const string REG_PREFIX = "r";
-        private const string LABLE_PREFIX = "@";
+        private const string LABEL_PREFIX = "@";
         private const char STRING_PREFIX = '\"';
 
         public string[] Arguments;
 
-        public Opcode Name;
+        public Opcode Opcode;
 
         public override string ToString()
         {
-            return this.Name.ToString();
-        }
-
-        private Opcode MakeScriptOp()
-        {
-            return (Opcode)Enum.Parse(typeof(Opcode), Name.ToString());
+            return this.Opcode.ToString();
         }
 
         private byte[] ParseHex(string hex)
@@ -45,7 +40,7 @@ namespace Phantasma.AssemblerLib
 
         public override void Process(ScriptBuilder sb)
         {
-            switch (Name)
+            switch (Opcode)
             {
                 //1 reg
                 case Opcode.PUSH:
@@ -123,6 +118,9 @@ namespace Phantasma.AssemblerLib
                     break;
 
                 case Opcode.CALL:
+                    ProcessCall(sb);
+                    break;
+
                 case Opcode.JMP:
                     ProcessJump(sb);
                     break;
@@ -187,7 +185,7 @@ namespace Phantasma.AssemblerLib
         private void ProcessJumpIf(ScriptBuilder sb)
         {
             if (Arguments.Length != 2) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(LABLE_PREFIX))
+            if (Arguments[0].StartsWith(REG_PREFIX) && Arguments[1].StartsWith(LABEL_PREFIX))
             {
                 if (int.TryParse(Arguments[0].Substring(1), out var reg))
                 {
@@ -201,13 +199,17 @@ namespace Phantasma.AssemblerLib
 
         private void ProcessJump(ScriptBuilder sb)
         {
-            if (Arguments.Length != 1) throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
-            if (Arguments[0].StartsWith(LABLE_PREFIX))
+            if (Arguments.Length != 1)
             {
-                sb.EmitJump(MakeScriptOp(), Arguments[0]);
-                return;
+                throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             }
-            throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+
+            if (!Arguments[0].StartsWith(LABEL_PREFIX))
+            {
+                throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+            }
+
+            sb.EmitJump(MakeScriptOp(), Arguments[0]);
         }
 
         private void ProcessExtCall(ScriptBuilder sb)
@@ -263,7 +265,7 @@ namespace Phantasma.AssemblerLib
                 if (int.TryParse(Arguments[0].Substring(1), out var src) &&
                     int.TryParse(Arguments[1].Substring(1), out var dest))
                 {
-                    if (Name == Opcode.MOVE)
+                    if (Opcode == Opcode.MOVE)
                     {
                         sb.EmitMove(src, dest);
                     }
@@ -296,7 +298,7 @@ namespace Phantasma.AssemblerLib
                     }
                     else if (int.TryParse(Arguments[2].Substring(1), out var dest_reg) && Arguments[2].StartsWith(REG_PREFIX))
                     {
-                        sb.Emit(MakeScriptOp(), new[]
+                        sb.Emit(this.Opcode, new[]
                         {
                             Convert.ToByte(src_a_reg),
                             Convert.ToByte(src_b_reg),
