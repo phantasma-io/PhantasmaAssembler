@@ -53,12 +53,12 @@ namespace Phantasma.AssemblerConsole
             {               
                 foreach (var entry in semantemes)
                 {
-                    //Console.WriteLine($"{entry}");
+                    Console.WriteLine($"{entry}");
                     entry.Process(sb);
                 }
                 script = sb.ToScript();
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Error assembling " + sourceFilePath);
                 Environment.Exit(-1);

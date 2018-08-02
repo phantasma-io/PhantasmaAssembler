@@ -54,7 +54,7 @@ namespace Phantasma.AssemblerLib
                     yield return new Label
                     {
                         LineNumber = lineNumber,
-                        Name = pline.Substring(0, index)
+                        Name = pline.Substring(0, index).AsLabel()
                     };
                     pline = pline.Substring(index + 1).Trim();
                 }
