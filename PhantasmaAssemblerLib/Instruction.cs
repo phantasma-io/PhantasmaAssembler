@@ -93,7 +93,11 @@ namespace Phantasma.AssemblerLib
                     break;
 
                 case Opcode.RET:
-                    ProcessOthers(sb);
+                    ProcessReturn(sb);
+                    break;
+
+                case Opcode.THROW:
+                    ProcessThrow(sb);
                     break;
 
                 case Opcode.JMPIF:
@@ -405,14 +409,59 @@ namespace Phantasma.AssemblerLib
             }
         }
 
-        private void ProcessOthers(ScriptBuilder sb)
+        private void ProcessReturn(ScriptBuilder sb)
         {
-            if (Arguments.Length != 0)
+            if (Arguments.Length == 0)
+            {
+                sb.Emit(this.Opcode);
+            }
+            else
+            if (Arguments.Length == 1)
+            {
+                if (Arguments[0].IsRegister())
+                {
+                    var reg = Arguments[0].AsRegister();
+                    sb.EmitPush(reg);
+                    sb.Emit(this.Opcode);
+                }
+                else
+                {
+                    throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+                }
+            }
+            else
             {
                 throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             }
-
-            sb.Emit(this.Opcode);
         }
+
+        private void ProcessThrow(ScriptBuilder sb)
+        {
+            if (Arguments.Length == 0)
+            {
+                sb.Emit(this.Opcode);
+                sb.EmitVarBytes(0);
+            }
+            else
+            if (Arguments.Length == 1)
+            {
+                if (Arguments[0].IsBytes())
+                {
+                    var bytes = Arguments[0].AsBytes();
+                    sb.Emit(this.Opcode);
+                    sb.EmitVarBytes(bytes.Length);
+                    sb.EmitRaw(bytes);
+                }
+                else
+                {
+                    throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
+                }
+            }
+            else
+            {
+                throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
+            }
+        }
+
     }
 }
