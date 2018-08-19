@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Phantasma.Blockchain;
 using Phantasma.AssemblerLib;
 using Phantasma.Utils;
+using Phantasma.Cryptography;
+using Phantasma.VM.Types;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -79,8 +82,15 @@ namespace Phantasma.AssemblerConsole
 
 
             Console.WriteLine("Executing script...");
-            var vm = new TestVM(script);
-            vm.Execute();
+            var keys = KeyPair.Generate();
+            var chain = new Chain(keys);
+            var tx = new Transaction(keys.Address, script, 0, 0);
+
+            var vm = new RuntimeVM(chain, tx);
+            var state = vm.Execute();
+
+            /*var vm = new TestVM(script);
+            vm.Execute();*/
         }
     }
 }

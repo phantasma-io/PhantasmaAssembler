@@ -157,13 +157,12 @@ namespace Phantasma.AssemblerLib
                 else
                 if (Arguments[1].IsString())
                 {
-                    var name = Arguments[0].AsString();
+                    var name = Arguments[1].AsString();
                     NativeContractKind kind;
                     
-                    if (System.Enum.TryParse<NativeContractKind>(name, out kind))
+                    if (System.Enum.TryParse<NativeContractKind>(name, true, out kind))
                     {
-                        var chain = new Chain(KeyPair.Generate(), null);
-                        var contract = chain.GetNativeContract(kind);
+                        var contract = Chain.GetNativeContract(kind);
                         if (contract == null)
                         {
                             throw new CompilerException(LineNumber, ERR_INVALID_CONTRACT);
