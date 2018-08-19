@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using Phantasma.Mathematics;
 using Phantasma.Utils;
+using Phantasma.Blockchain;
 using Phantasma.VM;
 using Phantasma.VM.Types;
+using Phantasma.Cryptography;
 
 namespace Phantasma.AssemblerLib
 {
@@ -10,6 +12,8 @@ namespace Phantasma.AssemblerLib
     {
         private const string ERR_INCORRECT_NUMBER = "incorrect number of arguments";
         private const string ERR_INVALID_ARGUMENT = "invalid argument";
+        private const string ERR_INVALID_CONTRACT = "invalid contract";
+        private const string ERR_UNKNOWN_CONTRACT = "unknown contract";
         private const string ERR_SYNTAX_ERROR = "syntax error";
 
         public string[] Arguments;
@@ -124,22 +128,17 @@ namespace Phantasma.AssemblerLib
                 throw new CompilerException(LineNumber, ERR_INCORRECT_NUMBER);
             }
 
-            byte[] bytes = null;
-            if (Arguments[0].IsBytes())
+            byte dest_reg;
+            if (Arguments[0].IsRegister())
             {
-                bytes = Base16.Decode(Arguments[0]);
+                dest_reg = Arguments[0].AsRegister();
             }
             else
             {
                 throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
             }
 
-            if (bytes.Length != Address.PublicKeyLength)
-            {
-                throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
-            }
-
-            sb.Emit(this.Opcode, bytes);
+            sb.Emit(this.Opcode, new byte[] { dest_reg });
         }
 
         private void ProcessCtx(ScriptBuilder sb)
@@ -151,9 +150,32 @@ namespace Phantasma.AssemblerLib
                 var dest_reg = Arguments[0].AsRegister();
 
                 byte[] bytes = null;
-                if (Arguments[0].IsBytes())
+                if (Arguments[1].IsBytes())
                 {
-                    bytes = Base16.Decode(Arguments[0]);
+                    bytes = Base16.Decode(Arguments[1]);
+                }
+                else
+                if (Arguments[1].IsString())
+                {
+                    var name = Arguments[0].AsString();
+                    NativeContractKind kind;
+                    
+                    if (System.Enum.TryParse<NativeContractKind>(name, out kind))
+                    {
+                        var chain = new Chain(KeyPair.Generate(), null);
+                        var contract = chain.GetNativeContract(kind);
+                        if (contract == null)
+                        {
+                            throw new CompilerException(LineNumber, ERR_INVALID_CONTRACT);
+                        }
+                        else
+                        {
+                            bytes = contract.Address.PublicKey;
+                        }
+                    }
+                    else {
+                        throw new CompilerException(LineNumber, ERR_UNKNOWN_CONTRACT);
+                    }
                 }
                 else
                 {
