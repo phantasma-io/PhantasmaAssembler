@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Numerics;
-using Phantasma.Core;
+﻿using System.Linq;
+using Phantasma.Mathematics;
 using Phantasma.Utils;
 using Phantasma.VM;
+using Phantasma.VM.Types;
 
 namespace Phantasma.AssemblerLib
 {
@@ -128,14 +127,14 @@ namespace Phantasma.AssemblerLib
             byte[] bytes = null;
             if (Arguments[0].IsBytes())
             {
-                bytes = Arguments[0].HexToBytes();
+                bytes = Base16.Decode(Arguments[0]);
             }
             else
             {
                 throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
             }
 
-            if (bytes.Length != KeyPair.PublicKeyLength)
+            if (bytes.Length != Address.PublicKeyLength)
             {
                 throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
             }
@@ -154,14 +153,14 @@ namespace Phantasma.AssemblerLib
                 byte[] bytes = null;
                 if (Arguments[0].IsBytes())
                 {
-                    bytes = Arguments[0].HexToBytes();
+                    bytes = Base16.Decode(Arguments[0]);
                 }
                 else
                 {
                     throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
                 }
 
-                if (bytes.Length != KeyPair.PublicKeyLength)
+                if (bytes.Length != Address.PublicKeyLength)
                 {
                     throw new CompilerException(LineNumber, ERR_INVALID_ARGUMENT);
                 }

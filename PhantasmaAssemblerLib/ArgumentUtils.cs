@@ -1,7 +1,5 @@
-﻿using Phantasma.Utils;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
+﻿using System;
+using Phantasma.Mathematics;
 
 namespace Phantasma.AssemblerLib
 {
@@ -69,7 +67,7 @@ namespace Phantasma.AssemblerLib
 
         public static byte[] AsBytes(this string arg)
         {
-            return arg.HexToBytes();
+            return Base16.Decode(arg);
         }
     }
 }

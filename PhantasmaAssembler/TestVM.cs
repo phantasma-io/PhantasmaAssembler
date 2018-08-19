@@ -1,4 +1,5 @@
 ﻿using Phantasma.VM;
+using Phantasma.VM.Types;
 using System;
 
 namespace Phantasma.AssemblerConsole
@@ -22,7 +23,7 @@ namespace Phantasma.AssemblerConsole
             return ExecutionState.Halt;
         }
 
-        public override ExecutionContext LoadContext(byte[] key)
+        public override ExecutionContext LoadContext(Address address)
         {
             throw new NotImplementedException();
         }
