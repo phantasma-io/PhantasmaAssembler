@@ -42,7 +42,7 @@ namespace Phantasma.AssemblerLib
 
         public static string AsString(this string arg)
         {
-            return arg.Trim('"');
+            return arg.Substring(1, arg.Length - 2);
         }
 
         public static byte AsRegister(this string arg)

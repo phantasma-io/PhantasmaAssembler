@@ -88,6 +88,7 @@ namespace Phantasma.AssemblerConsole
 
             var vm = new RuntimeVM(chain, tx);
             var state = vm.Execute();
+            Console.WriteLine("State = " + state);
 
             /*var vm = new TestVM(script);
             vm.Execute();*/
