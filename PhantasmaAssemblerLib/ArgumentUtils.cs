@@ -62,7 +62,8 @@ namespace Phantasma.AssemblerLib
 
         public static BigInteger AsNumber(this string arg)
         {
-            return BigInteger.Parse(arg);
+            var result = BigInteger.Parse(arg);
+            return result;
         }
 
         public static byte[] AsBytes(this string arg)
