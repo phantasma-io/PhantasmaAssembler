@@ -40,9 +40,9 @@ namespace Phantasma.AssemblerConsole
             {
                 semantemes = Semanteme.ProcessLines(lines);
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine("Error parsing " + sourceFilePath);
+                Console.WriteLine("Error parsing " + sourceFilePath + " :" + e.Message);
                 Environment.Exit(-1);
             }
 
@@ -60,7 +60,7 @@ namespace Phantasma.AssemblerConsole
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error assembling " + sourceFilePath);
+                Console.WriteLine("Error assembling " + sourceFilePath + " :" + e.Message);
                 Environment.Exit(-1);
             }
 
