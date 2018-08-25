@@ -6,6 +6,7 @@ using Phantasma.AssemblerLib;
 using Phantasma.Utils;
 using Phantasma.Cryptography;
 using Phantasma.VM.Types;
+using Phantasma.Utils.Log;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -83,8 +84,8 @@ namespace Phantasma.AssemblerConsole
 
             Console.WriteLine("Executing script...");
             var keys = KeyPair.Generate();
-            var chain = new Chain(keys);
-            var tx = new Transaction(keys.Address, script, 0, 0);
+            var chain = new Chain(keys, new ConsoleLogger());
+            var tx = new Transaction(script, 0, 0);
 
             var vm = new RuntimeVM(chain, tx);
             var state = vm.Execute();
