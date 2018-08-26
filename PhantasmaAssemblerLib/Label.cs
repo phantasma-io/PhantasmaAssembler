@@ -1,4 +1,4 @@
-﻿using Phantasma.Utils;
+﻿using Phantasma.VM.Utils;
 
 namespace Phantasma.AssemblerLib
 {

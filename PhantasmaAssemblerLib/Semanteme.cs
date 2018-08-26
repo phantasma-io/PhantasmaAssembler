@@ -1,5 +1,5 @@
 ﻿using Phantasma.VM;
-using Phantasma.Utils;
+using Phantasma.VM.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

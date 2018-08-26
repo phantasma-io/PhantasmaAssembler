@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Phantasma.Mathematics;
-using Phantasma.Utils;
+using Phantasma.Core.Utils;
+using Phantasma.VM.Utils;
 using Phantasma.Blockchain;
 using Phantasma.VM;
-using Phantasma.VM.Types;
 using Phantasma.Cryptography;
 
 namespace Phantasma.AssemblerLib

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using Phantasma.Blockchain;
 using Phantasma.AssemblerLib;
-using Phantasma.Utils;
+using Phantasma.Core.Utils;
+using Phantasma.Core.Log;
 using Phantasma.Cryptography;
-using Phantasma.VM.Types;
-using Phantasma.Utils.Log;
+using Phantasma.VM.Utils;
 
 namespace Phantasma.AssemblerConsole
 {
