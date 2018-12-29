@@ -70,7 +70,7 @@ namespace Phantasma.AssemblerConsole
             }
 
             var extension = Path.GetExtension(sourceFilePath);
-            var outputName = sourceFilePath.Replace(extension, ".svm");
+            var outputName = sourceFilePath.Replace(extension, Format.Extension);
 
             try
             {
