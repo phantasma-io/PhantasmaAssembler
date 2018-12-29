@@ -11,11 +11,16 @@ namespace Phantasma.AssemblerConsole
 
         }
 
+        public override ExecutionContext LoadContext(string contextName)
+        {
+            throw new NotImplementedException();
+        }
+
         public override ExecutionState ExecuteInterop(string method)
         {
             if (method == "Runtime.Log")
             {
-                var item = stack.Pop();
+                var item = Stack.Pop();
                 Console.WriteLine(item);
                 return ExecutionState.Running;
             }
@@ -23,9 +28,5 @@ namespace Phantasma.AssemblerConsole
             return ExecutionState.Halt;
         }
 
-        public override ExecutionContext LoadContext(Address address)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

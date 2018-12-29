@@ -1,5 +1,5 @@
 ﻿using System;
-using Phantasma.Mathematics;
+using Phantasma.Numerics;
 
 namespace Phantasma.AssemblerLib
 {

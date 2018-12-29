@@ -7,6 +7,7 @@ using Phantasma.Core.Utils;
 using Phantasma.Core.Log;
 using Phantasma.Cryptography;
 using Phantasma.VM.Utils;
+using Phantasma.Blockchain.Contracts;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -84,10 +85,10 @@ namespace Phantasma.AssemblerConsole
 
             Console.WriteLine("Executing script...");
             var keys = KeyPair.Generate();
-            var chain = new Chain(keys, new ConsoleLogger());
-            var tx = new Transaction(script, 0, 0);
+            var nexus = new Nexus("vmnet", keys.Address, new ConsoleLogger());
+            var tx = new Transaction(nexus.Name, nexus.RootChain.Name, script, 0, 0);
 
-            var vm = new RuntimeVM(chain, tx);
+            var vm = new RuntimeVM(tx.Script, nexus.RootChain, null, tx, null, true);
             var state = vm.Execute();
             Console.WriteLine("State = " + state);
 

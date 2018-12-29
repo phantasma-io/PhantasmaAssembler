@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Phantasma.Mathematics;
+using Phantasma.Numerics;
 using Phantasma.Core.Utils;
 using Phantasma.VM.Utils;
 using Phantasma.Blockchain;
@@ -158,7 +158,8 @@ namespace Phantasma.AssemblerLib
                 if (Arguments[1].IsString())
                 {
                     var name = Arguments[1].AsString();
-                    NativeContractKind kind;
+                    // TODO FIXME!!!
+                    /*NativeContractKind kind;
                     
                     if (System.Enum.TryParse<NativeContractKind>(name, true, out kind))
                     {
@@ -172,7 +173,8 @@ namespace Phantasma.AssemblerLib
                             bytes = contract.Address.PublicKey;
                         }
                     }
-                    else {
+                    else*/
+                    {
                         throw new CompilerException(LineNumber, ERR_UNKNOWN_CONTRACT);
                     }
                 }
@@ -245,7 +247,7 @@ namespace Phantasma.AssemblerLib
             }
             else
             {
-                sb.EmitJump(Arguments[0]);
+                sb.EmitJump(Opcode.JMP, Arguments[0]);
             }
         }
 

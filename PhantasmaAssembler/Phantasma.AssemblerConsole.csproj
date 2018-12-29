@@ -8,29 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PhantasmaChain\PhantasmaChain\PhantasmaChain.csproj" />
-    <ProjectReference Include="..\PhantasmaAssemblerLib\Phantasma.AssemblerLib.csproj" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Tests\hello.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Tests\test.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Tests\test2.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Tests\context.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Tests\test3.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Tests\token.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Blockchain\Phantasma.Blockchain.csproj" />
+    <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Core\Phantasma.Core.csproj" />
+    <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Cryptography\Phantasma.Cryptography.csproj" />
+    <ProjectReference Include="..\..\PhantasmaChain\Phantasma.VM\Phantasma.VM.csproj" />
+    <ProjectReference Include="..\PhantasmaAssemblerLib\Phantasma.AssemblerLib.csproj" />
   </ItemGroup>
 
 </Project>
