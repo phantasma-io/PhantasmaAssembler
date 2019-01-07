@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using Phantasma.Blockchain;
-using Phantasma.AssemblerLib;
 using Phantasma.Core.Utils;
 using Phantasma.Core.Log;
 using Phantasma.Cryptography;
 using Phantasma.VM.Utils;
 using Phantasma.Blockchain.Contracts;
+using Phantasma.CodeGen;
 
 namespace Phantasma.AssemblerConsole
 {

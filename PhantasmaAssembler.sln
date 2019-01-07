@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.AssemblerConsole", "PhantasmaAssembler\Phantasma.AssemblerConsole.csproj", "{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.AssemblerLib", "PhantasmaAssemblerLib\Phantasma.AssemblerLib.csproj", "{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.Core", "..\PhantasmaChain\Phantasma.Core\Phantasma.Core.csproj", "{007C95C8-BDE5-4C78-BB22-F53B240DCFF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.Cryptography", "..\PhantasmaChain\Phantasma.Cryptography\Phantasma.Cryptography.csproj", "{3378F166-A702-4003-9807-FF2168341B9F}"
@@ -19,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.IO", "..\Phantasm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.Numerics", "..\PhantasmaChain\Phantasma.Numerics\Phantasma.Numerics.csproj", "{AF43F36B-415E-45F1-87D2-924CEED627A4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phantasma.CodeGen", "..\PhantasmaChain\Phantasma.CodeGen\Phantasma.CodeGen.csproj", "{D85451E7-54E4-42A9-A6D2-91FB1153632A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +29,6 @@ Global
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB7F3910-25DF-423D-B6A5-26ABC4D443D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0DB4B55-D82F-4CEB-B8E7-1EFEF8024EA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{007C95C8-BDE5-4C78-BB22-F53B240DCFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{007C95C8-BDE5-4C78-BB22-F53B240DCFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{007C95C8-BDE5-4C78-BB22-F53B240DCFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{AF43F36B-415E-45F1-87D2-924CEED627A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF43F36B-415E-45F1-87D2-924CEED627A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF43F36B-415E-45F1-87D2-924CEED627A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85451E7-54E4-42A9-A6D2-91FB1153632A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85451E7-54E4-42A9-A6D2-91FB1153632A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85451E7-54E4-42A9-A6D2-91FB1153632A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85451E7-54E4-42A9-A6D2-91FB1153632A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

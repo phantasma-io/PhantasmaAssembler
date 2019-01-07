@@ -15,10 +15,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Blockchain\Phantasma.Blockchain.csproj" />
+    <ProjectReference Include="..\..\PhantasmaChain\Phantasma.CodeGen\Phantasma.CodeGen.csproj" />
     <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Core\Phantasma.Core.csproj" />
     <ProjectReference Include="..\..\PhantasmaChain\Phantasma.Cryptography\Phantasma.Cryptography.csproj" />
     <ProjectReference Include="..\..\PhantasmaChain\Phantasma.VM\Phantasma.VM.csproj" />
-    <ProjectReference Include="..\PhantasmaAssemblerLib\Phantasma.AssemblerLib.csproj" />
   </ItemGroup>
 
 </Project>
