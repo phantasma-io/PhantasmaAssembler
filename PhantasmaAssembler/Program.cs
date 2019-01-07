@@ -8,6 +8,7 @@ using Phantasma.Cryptography;
 using Phantasma.VM.Utils;
 using Phantasma.Blockchain.Contracts;
 using Phantasma.CodeGen;
+using Phantasma.CodeGen.Assembler;
 
 namespace Phantasma.AssemblerConsole
 {
@@ -70,7 +71,7 @@ namespace Phantasma.AssemblerConsole
             }
 
             var extension = Path.GetExtension(sourceFilePath);
-            var outputName = sourceFilePath.Replace(extension, Format.Extension);
+            var outputName = sourceFilePath.Replace(extension, ScriptFormat.Extension);
 
             try
             {
